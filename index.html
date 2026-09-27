@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>기술 Issue 대응현황 Dashboard</title>
+<title>기술 Risk 모니터링 Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -179,12 +179,43 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+
+<!-- ===== PIN 로그인 게이트 ===== -->
+<div id="pinGate" style="
+  position:fixed;inset:0;z-index:999;
+  background:#16202A;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'IBM Plex Sans KR', sans-serif;
+  padding:20px;
+">
+  <div style="
+    background:#fff;width:100%;max-width:360px;border-radius:3px;
+    padding:32px 28px;border-top:4px solid #D9622B;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+  ">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:#2C4A6E;text-transform:uppercase;margin-bottom:6px;">
+      Global Building ENG Team
+    </div>
+    <h2 style="font-family:'Oswald',sans-serif;font-size:22px;margin:0 0 18px;color:#16202A;">접속 비밀번호</h2>
+    <input type="password" id="pinInput" placeholder="비밀번호 입력" autocomplete="off"
+      style="width:100%;box-sizing:border-box;border:1px solid #D7DBDD;border-radius:2px;padding:11px 12px;font-size:14px;margin-bottom:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;">
+    <div id="pinError" style="display:none;color:#D9622B;font-size:12.5px;margin-bottom:10px;">비밀번호가 올바르지 않습니다.</div>
+    <button id="pinSubmit" style="
+      width:100%;border:1px solid #16202A;background:#16202A;color:#fff;
+      font-weight:600;font-size:14px;padding:11px 16px;border-radius:2px;cursor:pointer;font-family:'IBM Plex Sans KR',sans-serif;
+    ">입장</button>
+    <div style="font-size:11px;color:#7C8B99;margin-top:14px;line-height:1.6;">
+      팀 내부 공유 링크입니다. 비밀번호는 팀 내에서 별도로 안내됩니다.
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="appRoot" style="display:none;">
 
   <header>
     <div class="title-block">
-      <div class="eyebrow">ENG TEAM · 해외건축사업본부</div>
-      <h1>기술 Issue 대응현황 Dashboard</h1>
+      <div class="eyebrow">Global Building ENG Team</div>
+      <h1>기술 Risk 모니터링 Dashboard</h1>
       <div class="subtitle">입찰 · 수행 프로젝트별 주요 기술 Issue 및 대응 현황 관리</div>
     </div>
     <div id="lastSaved" style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gray);text-align:right;"></div>
@@ -363,6 +394,50 @@
     </div>
   </div>
 </div>
+
+<script>
+/* ============================================================
+   PIN 로그인 게이트
+   - SITE_PIN 값을 팀에서 쓸 비밀번호로 바꾸세요.
+   - 브라우저 sessionStorage에 인증 상태를 저장하므로,
+     같은 탭/창을 쓰는 동안은 다시 물어보지 않습니다
+     (브라우저를 완전히 닫으면 다음 접속 때 다시 입력).
+   - 코드에 비밀번호가 그대로 들어있는 방식이라 개발자 도구로
+     우회 가능합니다. 사내 공유용 가벼운 잠금 장치로만 쓰세요.
+   ============================================================ */
+  const SITE_PIN = "eng2026";
+  const PIN_SESSION_KEY = "eng-dashboard-pin-ok";
+
+  function tryUnlock(pin){
+    if(pin === SITE_PIN){
+      try{ sessionStorage.setItem(PIN_SESSION_KEY, "1"); }catch(e){}
+      document.getElementById('pinGate').style.display = 'none';
+      document.getElementById('appRoot').style.display = 'block';
+      return true;
+    }
+    document.getElementById('pinError').style.display = 'block';
+    return false;
+  }
+
+  (function initGate(){
+    let already = false;
+    try{ already = sessionStorage.getItem(PIN_SESSION_KEY) === "1"; }catch(e){}
+    if(already){
+      document.getElementById('pinGate').style.display = 'none';
+      document.getElementById('appRoot').style.display = 'block';
+    }
+    document.getElementById('pinSubmit').addEventListener('click', ()=>{
+      tryUnlock(document.getElementById('pinInput').value);
+    });
+    document.getElementById('pinInput').addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){
+        tryUnlock(document.getElementById('pinInput').value);
+      } else {
+        document.getElementById('pinError').style.display = 'none';
+      }
+    });
+  })();
+</script>
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
