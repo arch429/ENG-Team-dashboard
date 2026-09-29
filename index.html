@@ -136,6 +136,14 @@
   .badge.status-대응중{background:var(--blue-bg);color:var(--steel);}
   .badge.status-보류{background:#EDEDED;color:var(--gray);}
   .badge.status-완료{background:var(--green-bg);color:var(--green);}
+  .badge-new{
+    display:inline-block;background:var(--orange);color:#fff;
+    font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;
+    padding:2px 6px;border-radius:3px;letter-spacing:.05em;
+    margin-right:6px;vertical-align:middle;
+    animation: newPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes newPulse{ 0%,100%{ opacity:1; } 50%{ opacity:.5; } }
   .badge.prio{border:1px solid currentColor;background:none;}
 
   .item-detail{display:none;padding:14px 16px 18px 58px;border-top:1px dashed var(--line);background:#FBFBF9;}
@@ -514,9 +522,9 @@ let notifSettings = { recipients: [], frequency: 'realtime', amTime:'09:00', pmT
    사용해서 구성하세요: to_email, change_type, issue_title,
    project_name, status, owner, updated_at, message
    ============================================================ */
-const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
-const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+const EMAILJS_PUBLIC_KEY = "5nNPafqf_r7EQCxQC";
+const EMAILJS_SERVICE_ID = "service_1dn11ek";
+const EMAILJS_TEMPLATE_ID = "template_wpx8wff";
 const emailConfigured = !EMAILJS_PUBLIC_KEY.includes('YOUR_EMAILJS_PUBLIC_KEY');
 if(emailConfigured && window.emailjs){ emailjs.init({publicKey: EMAILJS_PUBLIC_KEY}); }
 
