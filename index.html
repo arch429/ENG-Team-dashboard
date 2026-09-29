@@ -791,12 +791,12 @@ function sendDigestEmail(slot){
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
       to_email: email,
       change_type: `${slot} 정리 알림 (최근 24시간 변경 ${changed.length}건)`,
-      issue_title: '-',
-      project_name: '-',
-      status: '-',
-      owner: '-',
-      updated_at: new Date().toLocaleString('ko-KR'),
-      message: lines
+      [{{change_type}}] {{issue_title}}
+      프로젝트: {{project_name}}
+      상태: {{status}}
+      담당자: {{owner}}
+      시각: {{updated_at}}
+      {{message}}
     }).catch(err=>console.error('EmailJS 다이제스트 전송 실패', err));
   });
 }
